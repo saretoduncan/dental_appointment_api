@@ -15,7 +15,7 @@ datasource db {
 
 model AccessLevel {
   id    String @id @default(cuid())
-  access_level  String
+  access_level  String @unique
   users User[]
 }
 
