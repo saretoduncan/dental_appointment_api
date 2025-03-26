@@ -35,133 +35,99 @@ export class AccessLevelService implements OnModuleInit {
 
   async createAccessLevel(level: string) {
     const upperLevel = level.toUpperCase();
-    try {
-      const getLevel = await this.prismaService.accessLevel.findUnique({
-        where: {
-          access_level: upperLevel,
-        },
-      });
-      if (getLevel) {
-        throw new HttpException(
-          'The access level is already registered',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
 
-      const res = await this.prismaService.accessLevel.create({
-        data: {
-          access_level: upperLevel,
-        },
-      });
-      return res;
-    } catch (e) {
-      console.log(e);
+    const getLevel = await this.prismaService.accessLevel.findUnique({
+      where: {
+        access_level: upperLevel,
+      },
+    });
+    if (getLevel) {
       throw new HttpException(
-        'something went wrong while saving access level',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        'The access level is already registered',
+        HttpStatus.BAD_REQUEST,
       );
     }
+
+    const res = await this.prismaService.accessLevel.create({
+      data: {
+        access_level: upperLevel,
+      },
+    });
+    return res;
   }
   async getAllAccessLevels() {
-    try {
-      const res = await this.prismaService.accessLevel.findMany();
-      return res;
-    } catch (e) {
-      console.log(e);
-      throw new HttpException(
-        'something went wrong while accessing access level',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    const res = await this.prismaService.accessLevel.findMany();
+    return res;
   }
   async findAccessLevelByLevel(level: string) {
-    try {
-      const res = await this.prismaService.accessLevel.findFirst({
-        where: {
-          access_level: level.toUpperCase(),
-        },
-      });
-      if (!res)
-        throw new HttpException(
-          `The access level ${level} is not registered yet`,
-          HttpStatus.NOT_FOUND,
-        );
-
-      return res;
-    } catch (e) {
-      console.log(e);
+    const res = await this.prismaService.accessLevel.findFirst({
+      where: {
+        access_level: level.toUpperCase(),
+      },
+    });
+    if (!res)
       throw new HttpException(
-        'something went wrong while accessing the access level',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        `The access level ${level} is not registered yet`,
+        HttpStatus.NOT_FOUND,
       );
-    }
+
+    return res;
   }
   async getAccessLevelById(level_id: string) {
-    try {
-      const res = await this.prismaService.accessLevel.findUnique({
-        where: {
-          id: level_id,
-        },
-      });
-      if (!res)
-        throw new HttpException(
-          `The access level ${level_id} is not registered yet`,
-          HttpStatus.NOT_FOUND,
-        );
-      return res;
-    } catch (e) {
-      console.log(e);
+    const res = await this.prismaService.accessLevel.findUnique({
+      where: {
+        id: level_id,
+      },
+    });
+    if (!res)
       throw new HttpException(
-        'something went wrong while accessing the access level',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        `The access level ${level_id} is not registered yet`,
+        HttpStatus.NOT_FOUND,
       );
-    }
+    return res;
   }
   async updateAccessLevelById(level_id: string, level: string) {
-    try {
-      const getLevel = await this.getAccessLevelById(level_id);
-      const res = await this.prismaService.accessLevel.update({
-        where: {
-          id: getLevel.id,
+    const getLevel = await this.getAccessLevelById(level_id);
+    const res = await this.prismaService.accessLevel.update({
+      where: {
+        id: getLevel.id,
+      },
+      data: {
+        access_level: level.toUpperCase(),
+      },
+    });
+    return res;
+  }
+  async revokeAllAccessLevelByLevel(level: string) {
+    const getLevel = await this.findAccessLevelByLevel(level);
+    return await this.prismaService.accessLevel.update({
+      where: {
+        id: getLevel.id,
+      },
+      data: {
+        users: {
+          set: [],
         },
-        data: {
-          access_level: level.toUpperCase(),
-        },
-      });
-      return res;
-    } catch (e) {
-      console.log(e);
-      throw new HttpException(
-        'something went wrong while updating the access level',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+      },
+    });
   }
 
   async deleteAccessLevelById(level_id: string) {
-    try {
-     const access_level= await this.getAccessLevelById(level_id);
-      await this.prismaService.accessLevel.update({
-        where: {
-          id: access_level.id,
+    const access_level = await this.getAccessLevelById(level_id);
+    await this.prismaService.accessLevel.update({
+      where: {
+        id: access_level.id,
+      },
+      data: {
+        users: {
+          set: [],
         },
-        data: {
-          users: {
-            set: [],
-          },
-        },
-      });
-      return await this.prismaService.accessLevel.delete({
-        where:{
-            id:access_level.id
-        }
-      });
-    } catch (e) {
-      console.log(e);
-      throw new HttpException(
-        'something went wrong while deleting the access level',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+      },
+    });
+    return await this.prismaService.accessLevel.delete({
+      where: {
+        id: access_level.id,
+      },
+    });
   }
 }
