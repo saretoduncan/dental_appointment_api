@@ -16,7 +16,7 @@ export class AccessLevelController {
     return await this.accessLevelService.getAccessLevelById(id);
   }
   @Get('/level')
-  async getAccessLevelByLevel(@Query('access-level') accessLevel: string) {
+  async getAccessLevelByLevel(@Query('access_level') accessLevel: string) {
     if(accessLevel===undefined) throw new HttpException('access_level query cannot be empty', HttpStatus.BAD_REQUEST);
     return await this.accessLevelService.findAccessLevelByLevel(accessLevel);
   }
