@@ -121,6 +121,9 @@ export class UsersService {
           },
         },
       },
+      omit: {
+        password: true,
+      },
     });
     if (!user) {
       throw new HttpException(
@@ -137,7 +140,11 @@ export class UsersService {
         national_id_no: national_id,
       },
       include: {
-        user: true,
+        user: {
+          omit: {
+            password: true,
+          },
+        },
         next_of_keen: true,
       },
     });
@@ -155,10 +162,19 @@ export class UsersService {
     newPassword: string,
     confirmPassword: string,
   ) {
-    const user = await this.getUserById(userId);
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (!user)
+      throw new HttpException(
+        `The user with the id:${userId} is not registered yet`,
+        HttpStatus.NOT_FOUND,
+      );
     if (newPassword !== confirmPassword)
       throw new HttpException("passwords doen't", HttpStatus.BAD_REQUEST);
-    const isCorrectPass = await bcrypt.compare(oldPassword, user?.password);
+    const isCorrectPass = await bcrypt.compare(oldPassword, user.password);
     if (!isCorrectPass)
       throw new HttpException(
         'the old password is incorrect',
@@ -227,6 +243,9 @@ export class UsersService {
           },
         },
       },
+      omit: {
+        password: true,
+      },
     });
   }
   //revoke access level
@@ -251,6 +270,9 @@ export class UsersService {
             next_of_keen: true,
           },
         },
+      },
+      omit: {
+        password: true,
       },
     });
   }
