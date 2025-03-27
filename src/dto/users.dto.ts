@@ -37,6 +37,11 @@ export class UsersDtoReq {
   @MinLength(8)
   @MaxLength(8)
   national_id_no: string;
+  @IsNotEmpty()
+  @MinLength(6)
+  password: string;
+  @IsNotEmpty()
+  confirmPassword: string;
   @IsString()
   @MinLength(3)
   @IsNotEmpty()
@@ -62,7 +67,6 @@ export class UsersDtoReq {
   keen_relationship: string;
 }
 export class UserProfileDto {
- 
   @IsString()
   @IsOptional()
   @MinLength(3)
