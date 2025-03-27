@@ -1,10 +1,12 @@
 import {
+  isEmail,
   IsEmail,
   IsNotEmpty,
   IsOptional,
   IsPhoneNumber,
   IsString,
   MaxLength,
+  minLength,
   MinLength,
 } from 'class-validator';
 
@@ -58,4 +60,25 @@ export class UsersDtoReq {
   @MinLength(3)
   @IsNotEmpty()
   keen_relationship: string;
+}
+export class UserProfileDto {
+ 
+  @IsString()
+  @IsOptional()
+  @MinLength(3)
+  first_name: string;
+  @IsString()
+  @IsOptional()
+  @MinLength(3)
+  middle_name: string;
+  @IsEmail()
+  @IsOptional()
+  email: string;
+  @IsOptional()
+  @MinLength(10)
+  @MaxLength(12)
+  phone_number: string;
+  @IsOptional()
+  @IsEmail()
+  work_email: string;
 }
