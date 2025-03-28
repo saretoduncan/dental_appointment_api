@@ -48,7 +48,7 @@ export class UsersDtoReq {
   keen_first_name: string;
   @IsString()
   @IsNotEmpty()
-  role: string;
+  job_title: string;
   @IsString()
   @MinLength(3)
   @IsNotEmpty()
@@ -75,6 +75,13 @@ export class UserProfileDto {
   @IsOptional()
   @MinLength(3)
   middle_name: string;
+  @IsString()
+  @IsOptional()
+  @MinLength(3)
+  last_name: string;
+  @IsString()
+  @IsOptional()
+  job_title: string;
   @IsEmail()
   @IsOptional()
   email: string;

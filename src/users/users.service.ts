@@ -2,7 +2,7 @@ import { Body, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AccessLevelService } from 'src/access_level/access_level.service';
 import { UserProfileDto, UsersDtoReq } from 'src/dto/users.dto';
 import { PrismaService } from 'src/prisma.service';
-import bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcryptjs';
 @Injectable()
 export class UsersService {
   constructor(
@@ -19,7 +19,7 @@ export class UsersService {
     email: string,
     work_email: string,
     national_id_no: string,
-    role: string,
+    job_title: string,
     keen_first_name: string,
     keen_last_name: string,
     keen_phone_number: string,
@@ -41,7 +41,7 @@ export class UsersService {
     });
     if (user) {
       throw new HttpException(
-        'User is alright registered',
+        'User is already registered',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -60,7 +60,7 @@ export class UsersService {
             phone_number: phone_number,
             work_email: work_email,
             national_id_no: national_id_no,
-            role: role,
+            job_title: job_title,
             next_of_keen: {
               create: {
                 first_name: keen_first_name,
@@ -87,6 +87,7 @@ export class UsersService {
             next_of_keen: true,
           },
         },
+        access_levels: true,
       },
     });
 
@@ -104,6 +105,7 @@ export class UsersService {
             next_of_keen: true,
           },
         },
+        access_levels: true,
       },
     });
     return users;
@@ -120,6 +122,7 @@ export class UsersService {
             next_of_keen: true,
           },
         },
+        access_levels: true,
       },
       omit: {
         password: true,
@@ -143,6 +146,9 @@ export class UsersService {
         user: {
           omit: {
             password: true,
+          },
+          include: {
+            access_levels: true,
           },
         },
         next_of_keen: true,
@@ -192,6 +198,9 @@ export class UsersService {
       omit: {
         password: true,
       },
+      include: {
+        access_levels: true,
+      },
     });
     return;
   }
@@ -216,6 +225,9 @@ export class UsersService {
         user: {
           omit: {
             password: true,
+          },
+          include: {
+            access_levels: true,
           },
         },
         next_of_keen: true,
@@ -242,6 +254,7 @@ export class UsersService {
             next_of_keen: true,
           },
         },
+        access_levels: true,
       },
       omit: {
         password: true,
@@ -270,6 +283,7 @@ export class UsersService {
             next_of_keen: true,
           },
         },
+        access_levels:true
       },
       omit: {
         password: true,
@@ -290,6 +304,9 @@ export class UsersService {
           },
         },
       },
+      omit:{
+        password:true
+      }
     });
     //check if user exists
     if (!user) {

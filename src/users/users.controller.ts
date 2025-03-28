@@ -29,7 +29,7 @@ export class UsersController {
       userInfo.email,
       userInfo.work_email,
       userInfo.national_id_no,
-      userInfo.role,
+      userInfo.job_title,
       userInfo.keen_first_name,
       userInfo.keen_last_name,
       userInfo.keen_phone_number,
@@ -43,19 +43,19 @@ export class UsersController {
     return await this.userService.getAllUser();
   }
 
-  @Get(':userId') //get user by id
-  async getUserById(@Param('userId') userId: string) {
+  @Get() //get user by id
+  async getUserById(@Query('userId') userId: string) {
     if (!userId?.trim()) {
       throw new HttpException(
         'USER ID is required and cannot be empty',
         HttpStatus.BAD_REQUEST,
       );
     }
-    return await this.getUserById(userId);
+    return await this.userService.getUserById(userId);
   }
-  @Put('updateUserProfile/:userId') //update user profile
+  @Put('updateUserProfile') //update user profile
   async updateUserProfile(
-    @Param('userId') userId: string,
+    @Query('userId') userId: string,
     @Body() userInfo: UserProfileDto,
   ) {
     if (!userId?.trim()) {
@@ -67,10 +67,10 @@ export class UsersController {
     return await this.userService.updateUserProfile(userId, userInfo);
   }
 
-  @Patch('revokeAccessLevel/:userId') //revoke user
+  @Patch('revokeAccessLevel') //revoke user
   async revokeAccessLevel(
     @Query('accessLevelId') accessLevelId: string,
-    @Param('userId') userId: string,
+    @Query('userId') userId: string,
   ) {
     if (!userId?.trim() || !accessLevelId?.trim()) {
       throw new HttpException(
@@ -78,12 +78,12 @@ export class UsersController {
         HttpStatus.BAD_REQUEST,
       );
     }
-    return await this.revokeAccessLevel(accessLevelId, userId);
+    return await this.userService.revokeUserAccessLevel(userId, accessLevelId);
   }
 
-  @Patch('issueAccessLevel/:userId') //issue access
+  @Patch('issueAccessLevel') //issue access
   async issueAccessLevel(
-    @Param('userId') userId: string,
+    @Query('userId') userId: string,
     @Query('accessLevelId') accessLevelId: string,
   ) {
     if (!userId?.trim() || !accessLevelId?.trim()) {
@@ -95,8 +95,8 @@ export class UsersController {
     return await this.userService.updateUserAccessLevel(userId, accessLevelId);
   }
 
-  @Delete('/delete/:userId')
-  async deleteUser(@Param('userId') userId: string) {
+  @Delete('delete')
+  async deleteUser(@Query('userId') userId: string) {
     if (!userId?.trim()) {
       throw new HttpException(
         'USER ID is required and cannot be empty',
