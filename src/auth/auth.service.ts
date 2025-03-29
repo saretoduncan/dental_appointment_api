@@ -40,7 +40,7 @@ export class AuthService {
     const payload = {
       username:user.username,
       sub: user.id,
-      roles: user.access_levels
+      roles: user.access_levels.map((level)=>level.access_level)
     }
     const accessToken= this.jwtService.sign(payload)
     const { password: string, ...userWithoutPass } = user;

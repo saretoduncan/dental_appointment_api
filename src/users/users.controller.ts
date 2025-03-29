@@ -10,9 +10,13 @@ import {
   Post,
   Put,
   Query,
+  UseGuards
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UserProfileDto, UsersDtoReq } from 'src/dto/users.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { AccessLevelGuard } from 'src/guards/accessLevelGuard.guard';
+import { HasAccess } from 'src/decorators/hasAccess.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -38,6 +42,8 @@ export class UsersController {
       userInfo.keen_email_address,
     );
   }
+  @HasAccess('ADMIN')
+  @UseGuards(AuthGuard('jwt'), AccessLevelGuard)
   @Get('all') //get all users
   async getAllUsers() {
     return await this.userService.getAllUser();

@@ -9,29 +9,8 @@ import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
-export class AccessLevelService implements OnModuleInit {
+export class AccessLevelService {
   constructor(private readonly prismaService: PrismaService) {}
-  async onModuleInit() {
-    await this.seedAccessLevel();
-  }
-  private async seedAccessLevel() {
-    const accessLevels = ['ADMIN', 'USER', 'MODERATOR'];
-    for (const accessLevel of accessLevels) {
-      const existingAccessLevel =
-        await this.prismaService.accessLevel.findUnique({
-          where: {
-            access_level: accessLevel,
-          },
-        });
-      if (!existingAccessLevel) {
-        await this.prismaService.accessLevel.create({
-          data: {
-            access_level: accessLevel,
-          },
-        });
-      }
-    }
-  }
 
   async createAccessLevel(level: string) {
     const upperLevel = level.toUpperCase();
