@@ -93,3 +93,44 @@ export class UserProfileDto {
   @IsEmail()
   work_email: string;
 }
+export class NextOfKeenResDto {
+  id: string;
+  first_name: string;
+  last_Name: string;
+  email?: string;
+  phoneNumber: string;
+  relationship: string;
+  profile_id: string;
+  createdAt: Date;
+  updateAt: Date;
+}
+
+export class UserProfileResDto {
+  id: string;
+  first_name: string;
+  middle_name?: string;
+  last_name: string;
+  email: string;
+  phone_number: string;
+  work_email: string;
+  national_id_no: string;
+  job_title: string;
+  user_id: string;
+  createdAt: Date;
+  updateAt: Date;
+  next_of_keen?: NextOfKeenResDto;
+}
+
+export class AccessLevelResDto {
+  id: string;
+  access_level: string;
+}
+
+export class UserResponseDto {
+  id: string;
+  username: string;
+  createdAt: Date;
+  updateAt: Date;
+  profile?: UserProfileDto;
+  access_levels: AccessLevelResDto[];
+}
