@@ -21,7 +21,7 @@ model AccessLevel {
 
 model User {
   id                 String        @id @default(cuid())
-  user_name          String        @unique
+  username          String        @unique
   password           String
   profile            UserProfile?
   access_levels      AccessLevel[]

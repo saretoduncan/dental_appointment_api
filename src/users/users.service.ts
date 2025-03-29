@@ -34,22 +34,64 @@ export class UsersService {
       );
     const access_level =
       await this.accessLevelService.findAccessLevelByLevel('USER');
-    const user = await this.prismaService.user.findUnique({
+    const user = await this.prismaService.user.findFirst({
       where: {
-        user_name: national_id_no,
+        OR: [
+          { username: national_id_no },
+          {
+            profile: {
+              email: email,
+            },
+          },
+          {
+            profile: {
+              phone_number: phone_number,
+            },
+          },
+          {
+            profile: {
+              work_email: work_email,
+            },
+          },
+        ],
+      },
+
+      include: {
+        profile: true,
       },
     });
     if (user) {
+      if (user.profile) {
+        if (user.profile.email === email) {
+          throw new HttpException(
+            "email provided belong's to a registered user",
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        if (user.profile.phone_number === phone_number) {
+          throw new HttpException(
+            "phone number provided belong's to a registered user",
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        if (user.profile.work_email === work_email) {
+          throw new HttpException(
+            "work email provided belong's to a registered user",
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+      }
       throw new HttpException(
         'User is already registered',
         HttpStatus.BAD_REQUEST,
       );
     }
+
     const hashPassword = await bcrypt.hash(password, 10);
 
     const newUser = await this.prismaService.user.create({
       data: {
-        user_name: national_id_no,
+        username: national_id_no,
         password: hashPassword,
         profile: {
           create: {
@@ -283,7 +325,7 @@ export class UsersService {
             next_of_keen: true,
           },
         },
-        access_levels:true
+        access_levels: true,
       },
       omit: {
         password: true,
@@ -304,9 +346,9 @@ export class UsersService {
           },
         },
       },
-      omit:{
-        password:true
-      }
+      omit: {
+        password: true,
+      },
     });
     //check if user exists
     if (!user) {

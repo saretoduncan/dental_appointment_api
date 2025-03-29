@@ -133,4 +133,5 @@ export class UserResponseDto {
   updateAt: Date;
   profile?: UserProfileDto;
   access_levels: AccessLevelResDto[];
+  accessToken: string;
 }
