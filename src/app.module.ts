@@ -5,6 +5,7 @@ import { AccessLevelModule } from './access_level/access_level.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { PatientModule } from './patient/patient.module';
 
 @Global()
 @Module({
@@ -15,6 +16,7 @@ import { ConfigModule } from '@nestjs/config';
     AccessLevelModule,
     UsersModule,
     AuthModule,
+    PatientModule,
   ],
   providers: [PrismaService],
   exports: [PrismaService],
