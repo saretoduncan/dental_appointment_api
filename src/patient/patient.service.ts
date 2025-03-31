@@ -4,8 +4,7 @@ import {
   HttpStatus,
   Injectable,
 } from '@nestjs/common';
-import { error } from 'console';
-import { create } from 'domain';
+
 import {
   CreateDependentPatientDto,
   CreatePatientDto,
@@ -17,6 +16,8 @@ import { PrismaService } from 'src/prisma.service';
 @Injectable()
 export class PatientService {
   constructor(private readonly prismaService: PrismaService) {}
+
+  //add patient
   async addNewPatient(createPatientDto: CreatePatientDto) {
     const patient = await this.prismaService.patient.findFirst({
       where: {
@@ -64,6 +65,8 @@ export class PatientService {
       );
     }
   }
+
+  //add dependent patient
   async addDependent(
     patientId: string,
     dependentInfo: CreateDependentPatientDto,
@@ -97,17 +100,24 @@ export class PatientService {
       },
     });
   }
+  //get all patients
   async getAllPatients() {
     return await this.prismaService.patient.findMany({
       include: {
         dependants: true,
+        appointments:true
       },
     });
   }
+  //get patient by id
   async getPatientById(patientId: string) {
     const patient = await this.prismaService.patient.findUnique({
       where: {
         id: patientId,
+      },
+      include: {
+        appointments: true,
+        dependants: true,
       },
     });
     if (!patient) {
@@ -118,7 +128,7 @@ export class PatientService {
     }
     return patient;
   }
-
+  //get dependent patient by id
   async getDependentPatientById(dependentId: string) {
     const dependentPatient =
       await this.prismaService.dependentPatient.findUnique({

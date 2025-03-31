@@ -19,15 +19,17 @@ import {
 @Controller('patient')
 export class PatientController {
   constructor(private readonly patientService: PatientService) {}
-
+  //add patients
   @Post('new')
   async createPatientDto(@Body() patientInfo: CreatePatientDto) {
     return await this.patientService.addNewPatient(patientInfo);
   }
+
+  //add dependentPatients
   @Post('new/dependent')
   async addDependent(
     @Query('primaryCaregiverId') primaryCaregiverId: string,
-    dependentInfo: CreateDependentPatientDto,
+    @Body() dependentInfo: CreateDependentPatientDto,
   ) {
     if (!primaryCaregiverId?.trim()) {
       throw new HttpException(
@@ -35,16 +37,21 @@ export class PatientController {
         HttpStatus.BAD_REQUEST,
       );
     }
+    console.table(dependentInfo);
     return await this.patientService.addDependent(
       primaryCaregiverId.trim(),
       dependentInfo,
     );
   }
+
+  //get all patients
   @Get('all')
   async getAllPatients() {
     return this.patientService.getAllPatients();
   }
-  @Get('patientId')
+
+  //get patient by id
+  @Get('id')
   async getPatientById(@Query('patientId') patientId: string) {
     if (!patientId.trim()) {
       throw new HttpException(
@@ -54,7 +61,9 @@ export class PatientController {
     }
     return await this.patientService.getPatientById(patientId);
   }
-  @Get('dependentId')
+
+  //get dependent patient by id
+  @Get('dependent')
   async getDependentPatientId(@Query('dependentId') dependentId: string) {
     if (!dependentId) {
       throw new HttpException(
@@ -64,6 +73,8 @@ export class PatientController {
     }
     return await this.patientService.getDependentPatientById(dependentId);
   }
+
+  //update patient
   @Patch('update/patient')
   async updatePatientById(
     @Query('patientId') patientId: string,
@@ -80,6 +91,8 @@ export class PatientController {
       updatePatientInfo,
     );
   }
+
+  //update dependent patient
   @Patch('update/dependentPatient')
   async updateDependentPatient(
     @Query('dependentId') dependentId: string,
