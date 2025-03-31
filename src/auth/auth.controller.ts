@@ -13,6 +13,7 @@ import { Response } from 'express';
 import { UserResponseDto } from 'src/dto/users.dto';
 import { AuthService } from './auth.service';
 import { RefreshJwtGuard } from 'src/guards/refreshTokenGuardguard';
+import { JwtGuard } from 'src/guards/jwt.guard';
 
 interface RequstWithUser extends Request {
   user: UserResponseDto;
@@ -32,6 +33,7 @@ export class AuthController {
     return user;
   }
 
+  @HttpCode(HttpStatus.OK)
   @Post('refreshToken')
   @UseGuards(RefreshJwtGuard)
   async refreshToken(
@@ -44,5 +46,11 @@ export class AuthController {
       req.user.id,
       req.user.access_levels.map((level) => level.access_level),
     );
+  }
+  @HttpCode(HttpStatus.OK)
+  @Post('logout')
+  @UseGuards(JwtGuard)
+  logout(@Res({ passthrough: true }) res: Response) {
+    return this.authService.logout(res);
   }
 }

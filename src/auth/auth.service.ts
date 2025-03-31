@@ -109,10 +109,19 @@ export class AuthService {
       process.env.JWT_SECRET!!,
       process.env.JWT_EXPIRE_IN!!,
     );
-  return {
-    accessToken
-  }
+    return {
+      accessToken,
+    };
   }
 
-  async logout() {}
+  async logout(res: Response) {
+    res.cookie('refreshToken', '', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'none',
+      maxAge: 0,
+      path: '/',
+    });
+    return;
+  }
 }
