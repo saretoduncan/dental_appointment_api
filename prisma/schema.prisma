@@ -70,24 +70,26 @@ model Patient {
   phone_number   String
   residence      String
   date_of_birth  DateTime
-  dependants     DependantPatient[]
+  dependants     DependentPatient[]
   appointments   Appointment[]
   createdAt      DateTime           @default(now())
   updateAt       DateTime           @updatedAt
 }
 
-model DependantPatient {
-  id                   String        @id @default(cuid())
-  first_name           String
-  middle_name          String?
-  last_name            String
-  date_of_birth        DateTime
-  guardian             Patient       @relation(fields: [guardian_id], references: [id])
-  guardian_id          String
-  guadian_relationship String
-  appointments         Appointment[]
-  createdAt            DateTime      @default(now())
-  updateAt             DateTime      @updatedAt
+model DependentPatient {
+  id                     String        @id @default(cuid())
+  first_name             String
+  middle_name            String?
+  last_name              String
+  date_of_birth          DateTime
+  phone_number           String?
+  email                  String?
+  primary_care_giver     Patient       @relation(fields: [primary_care_giver_id], references: [id])
+  primary_care_giver_id  String
+  dependent_relationship String
+  appointments           Appointment[]
+  createdAt              DateTime      @default(now())
+  updateAt               DateTime      @updatedAt
 }
 
 model Appointment {
@@ -96,7 +98,7 @@ model Appointment {
   appointment          DateTime
   patient              Patient?          @relation(fields: [patient_id], references: [id])
   patient_id           String?
-  dependentPatient     DependantPatient? @relation(fields: [dependent_patient_id], references: [id])
+  dependentPatient     DependentPatient? @relation(fields: [dependent_patient_id], references: [id])
   dependent_patient_id String?
   booked_by            User              @relation(fields: [booked_by_id], references: [id])
   booked_by_id         String
