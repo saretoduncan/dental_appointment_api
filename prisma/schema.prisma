@@ -14,14 +14,14 @@ datasource db {
 }
 
 model AccessLevel {
-  id    String @id @default(cuid())
-  access_level  String
-  users User[]
+  id           String @id @default(cuid())
+  access_level String @unique
+  users        User[]
 }
 
 model User {
   id                 String        @id @default(cuid())
-  user_name          String
+  username          String        @unique
   password           String
   profile            UserProfile?
   access_levels      AccessLevel[]
@@ -38,23 +38,24 @@ model UserProfile {
   email          String      @unique
   phone_number   String      @unique
   work_email     String      @unique
-  national_id_no Int         @unique
-  role           String
+  national_id_no String      @unique
+  job_title      String
   user           User        @relation(fields: [user_id], references: [id])
   user_id        String      @unique
   next_of_keen   NextOfKeen?
-
-  createdAt DateTime @default(now())
-  updateAt  DateTime @updatedAt
+  createdAt      DateTime    @default(now())
+  updateAt       DateTime    @updatedAt
 }
 
 model NextOfKeen {
   id           String      @id @default(cuid())
-  email        String
+  first_name   String
+  last_Name    String
+  email        String?
   phoneNumber  String
-  Relationship String
-  user         UserProfile @relation(fields: [user_id], references: [id])
-  user_id      String      @unique
+  relationship String
+  userProfile  UserProfile @relation(fields: [profile_id], references: [id])
+  profile_id   String      @unique
   createdAt    DateTime    @default(now())
   updateAt     DateTime    @updatedAt
 }
