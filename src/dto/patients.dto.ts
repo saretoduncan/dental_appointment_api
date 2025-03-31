@@ -1,10 +1,4 @@
-import {
-  IsString,
-  IsOptional,
-  IsEmail,
-  IsDateString,
-  IsDate,
-} from 'class-validator';
+import { IsString, IsOptional, IsEmail, IsDate, IsDateString } from 'class-validator';
 
 export class CreatePatientDto {
   @IsString()
@@ -30,7 +24,7 @@ export class CreatePatientDto {
   @IsString()
   residence: string;
 
-  @IsDate()
+  @IsDateString()
   date_of_birth: Date;
 }
 
@@ -120,5 +114,5 @@ export class UpdateDependentPatientDto {
 
   @IsOptional()
   @IsString()
-  guardian_relationship?: string;
+  dependent_relationship?: string;
 }

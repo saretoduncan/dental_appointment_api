@@ -65,9 +65,9 @@ model Patient {
   first_name     String
   middle_name    String?
   last_name      String
-  national_id_no String
+  national_id_no String             @unique
   email          String?
-  phone_number   String
+  phone_number   String             @unique
   residence      String
   date_of_birth  DateTime
   dependants     DependentPatient[]
