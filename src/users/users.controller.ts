@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Put,
+  Request,
   Query,
   UseGuards
 } from '@nestjs/common';
@@ -46,6 +47,7 @@ export class UsersController {
   @UseGuards(AuthGuard('jwt'), AccessLevelGuard)
   @Get('all') //get all users
   async getAllUsers() {
+  
     return await this.userService.getAllUser();
   }
 
