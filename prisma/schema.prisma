@@ -21,7 +21,7 @@ model AccessLevel {
 
 model User {
   id                 String        @id @default(cuid())
-  username          String        @unique
+  username           String        @unique
   password           String
   profile            UserProfile?
   access_levels      AccessLevel[]
@@ -61,30 +61,47 @@ model NextOfKeen {
 }
 
 model Patient {
-  id                    String        @id @default(cuid())
-  first_name            String
-  middle_name           String?
-  last_name             String
-  email                 String?
-  phone_number          String?
-  residence             String
-  date_of_birth         DateTime
-  guardian_name         String?
-  guardian_number       String?
-  guardian_relationship String?
-  appointments          Appointment[]
-  createdAt             DateTime      @default(now())
-  updateAt              DateTime      @updatedAt
+  id             String             @id @default(cuid())
+  first_name     String
+  middle_name    String?
+  last_name      String
+  national_id_no String             @unique
+  email          String?
+  phone_number   String             @unique
+  residence      String
+  date_of_birth  DateTime
+  dependants     DependentPatient[]
+  appointments   Appointment[]
+  createdAt      DateTime           @default(now())
+  updateAt       DateTime           @updatedAt
+}
+
+model DependentPatient {
+  id                     String        @id @default(cuid())
+  first_name             String
+  middle_name            String?
+  last_name              String
+  date_of_birth          DateTime
+  phone_number           String?
+  email                  String?
+  primary_care_giver     Patient       @relation(fields: [primary_care_giver_id], references: [id])
+  primary_care_giver_id  String
+  dependent_relationship String
+  appointments           Appointment[]
+  createdAt              DateTime      @default(now())
+  updateAt               DateTime      @updatedAt
 }
 
 model Appointment {
-  id           String   @id @default(cuid())
-  treatement   String?
-  appointment  DateTime
-  patient      Patient  @relation(fields: [patient_id], references: [id])
-  patient_id   String
-  booked_by    User     @relation(fields: [booked_by_id], references: [id])
-  booked_by_id String
-  createdAt    DateTime @default(now())
-  updateAt     DateTime @updatedAt
+  id                   String            @id @default(cuid())
+  treatement           String?
+  appointment          DateTime
+  patient              Patient?          @relation(fields: [patient_id], references: [id])
+  patient_id           String?
+  dependentPatient     DependentPatient? @relation(fields: [dependent_patient_id], references: [id])
+  dependent_patient_id String?
+  booked_by            User              @relation(fields: [booked_by_id], references: [id])
+  booked_by_id         String
+  createdAt            DateTime          @default(now())
+  updateAt             DateTime          @updatedAt
 }
