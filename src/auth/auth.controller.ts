@@ -40,7 +40,7 @@ export class AuthController {
     @Request()
     req: RequstWithUser,
   ) {
-    console.log(req.user);
+
     return this.authService.refreshToken(
       req.user.username,
       req.user.id,

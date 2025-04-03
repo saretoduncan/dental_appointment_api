@@ -94,7 +94,7 @@ model DependentPatient {
 
 model Appointment {
   id                   String            @id @default(cuid())
-  treatement           String?
+  treatement           String?           @db.LongText
   appointment          DateTime
   patient              Patient?          @relation(fields: [patient_id], references: [id])
   patient_id           String?

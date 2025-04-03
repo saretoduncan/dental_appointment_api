@@ -1,11 +1,11 @@
-import { IsOptional, IsString, IsDate, IsNotEmpty } from 'class-validator';
+import { IsOptional, IsString, IsDate, IsNotEmpty, IsDateString } from 'class-validator';
 
 export class CreateAppointmentsDto {
   @IsOptional()
   @IsString()
   treatement?: string;
 
-  @IsDate()
+  @IsDateString()
   @IsNotEmpty()
   appointment: Date;
 
@@ -17,9 +17,7 @@ export class CreateAppointmentsDto {
   @IsString()
   dependent_patient_id?: string;
 
-  @IsString()
-  @IsNotEmpty()
-  booked_by_id: string;
+ 
 }
 export class ReturnAppointmentDto {
   treatement: string | null;

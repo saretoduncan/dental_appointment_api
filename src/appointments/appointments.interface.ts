@@ -6,6 +6,7 @@ import {
 
 export interface IAppointments {
   createAppointments(
+    userId: string,
     createAppoinment: CreateAppointmentsDto,
   ): Promise<ReturnAppointmentDto>;
   getAllAppointments(): Promise<ReturnAppointmentDto[]>;

@@ -18,11 +18,10 @@ export class AppointmentsService implements IAppointments {
   ) {}
 
   async createAppointments(
+    userId: string,
     createAppoinment: CreateAppointmentsDto,
   ): Promise<ReturnAppointmentDto> {
-    const user = await this.userService.getUserById(
-      createAppoinment.booked_by_id,
-    );
+    const user = await this.userService.getUserById(userId);
     if (
       !createAppoinment.patient_id &&
       !createAppoinment.dependent_patient_id
@@ -32,11 +31,12 @@ export class AppointmentsService implements IAppointments {
         HttpStatus.BAD_REQUEST,
       );
     }
+    let newPatient: ReturnAppointmentDto= new ReturnAppointmentDto();
     if (createAppoinment.patient_id) {
       const patient = await this.patientService.getPatientById(
         createAppoinment.patient_id,
       );
-      const newPatient = await this.prismaService.appointment.create({
+      newPatient = await this.prismaService.appointment.create({
         data: {
           appointment: createAppoinment.appointment,
           treatement: createAppoinment.treatement,
@@ -52,15 +52,19 @@ export class AppointmentsService implements IAppointments {
           },
         },
       });
-      return newPatient;
-    } else {
-      return await this.prismaService.appointment.create({
+     
+    } else if (createAppoinment.dependent_patient_id) {
+      const dependent_patient =
+        await this.patientService.getDependentPatientById(
+          createAppoinment.dependent_patient_id,
+        );
+      newPatient = await this.prismaService.appointment.create({
         data: {
           appointment: createAppoinment.appointment,
           treatement: createAppoinment.treatement,
           dependentPatient: {
             connect: {
-              id: createAppoinment.dependent_patient_id,
+              id: dependent_patient.id,
             },
           },
           booked_by: {
@@ -71,6 +75,7 @@ export class AppointmentsService implements IAppointments {
         },
       });
     }
+    return newPatient;
   }
   async getAllAppointments(): Promise<ReturnAppointmentDto[]> {
     return await this.prismaService.appointment.findMany({

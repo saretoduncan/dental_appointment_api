@@ -18,9 +18,7 @@ export class RefreshJwtStrategy extends PassportStrategy(
     });
   }
   async validate(payload: JwtPayloadDto) {
-    console.log(payload);
     const user = await this.userService.getUserById(payload.sub);
     return user;
   }
-  
 }
