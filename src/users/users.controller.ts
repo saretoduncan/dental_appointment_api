@@ -11,13 +11,14 @@ import {
   Put,
   Request,
   Query,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UserProfileDto, UsersDtoReq } from 'src/dto/users.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { AccessLevelGuard } from 'src/guards/accessLevelGuard.guard';
 import { HasAccess } from 'src/decorators/hasAccess.decorator';
+import { JwtGuard } from 'src/guards/jwt.guard';
 
 @Controller('users')
 export class UsersController {
@@ -44,14 +45,14 @@ export class UsersController {
     );
   }
   @HasAccess('ADMIN')
-  @UseGuards(AuthGuard('jwt'), AccessLevelGuard)
+  @UseGuards(JwtGuard, AccessLevelGuard)
   @Get('all') //get all users
   async getAllUsers() {
-  
     return await this.userService.getAllUser();
   }
 
   @Get() //get user by id
+  @UseGuards(JwtGuard)
   async getUserById(@Query('userId') userId: string) {
     if (!userId?.trim()) {
       throw new HttpException(
@@ -61,6 +62,7 @@ export class UsersController {
     }
     return await this.userService.getUserById(userId);
   }
+  @UseGuards(JwtGuard)
   @Put('updateUserProfile') //update user profile
   async updateUserProfile(
     @Query('userId') userId: string,
@@ -74,7 +76,7 @@ export class UsersController {
     }
     return await this.userService.updateUserProfile(userId, userInfo);
   }
-
+  @UseGuards(JwtGuard)
   @Patch('revokeAccessLevel') //revoke user
   async revokeAccessLevel(
     @Query('accessLevelId') accessLevelId: string,
@@ -88,7 +90,8 @@ export class UsersController {
     }
     return await this.userService.revokeUserAccessLevel(userId, accessLevelId);
   }
-
+  @HasAccess('ADMIN')
+  @UseGuards(JwtGuard, AccessLevelGuard)
   @Patch('issueAccessLevel') //issue access
   async issueAccessLevel(
     @Query('userId') userId: string,
@@ -102,7 +105,8 @@ export class UsersController {
     }
     return await this.userService.updateUserAccessLevel(userId, accessLevelId);
   }
-
+  @HasAccess('ADMIN')
+  @UseGuards(JwtGuard, AccessLevelGuard)
   @Delete('delete')
   async deleteUser(@Query('userId') userId: string) {
     if (!userId?.trim()) {

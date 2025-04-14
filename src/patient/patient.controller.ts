@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { PatientService } from './patient.service';
 import {
@@ -15,6 +16,7 @@ import {
   UpdateDependentPatientDto,
   UpdatePatientDto,
 } from 'src/dto/patients.dto';
+import { JwtGuard } from 'src/guards/jwt.guard';
 
 @Controller('patient')
 export class PatientController {
@@ -26,6 +28,7 @@ export class PatientController {
   }
 
   //add dependentPatients
+  @UseGuards(JwtGuard)
   @Post('new/dependent')
   async addDependent(
     @Query('primaryCaregiverId') primaryCaregiverId: string,
@@ -45,12 +48,14 @@ export class PatientController {
   }
 
   //get all patients
+  @UseGuards(JwtGuard)
   @Get('all')
   async getAllPatients() {
     return this.patientService.getAllPatients();
   }
 
   //get patient by id
+  @UseGuards(JwtGuard)
   @Get('id')
   async getPatientById(@Query('patientId') patientId: string) {
     if (!patientId.trim()) {
@@ -63,6 +68,7 @@ export class PatientController {
   }
 
   //get dependent patient by id
+  @UseGuards(JwtGuard)
   @Get('dependent')
   async getDependentPatientId(@Query('dependentId') dependentId: string) {
     if (!dependentId) {
@@ -75,6 +81,7 @@ export class PatientController {
   }
 
   //update patient
+  @UseGuards(JwtGuard)
   @Patch('update/patient')
   async updatePatientById(
     @Query('patientId') patientId: string,
@@ -93,6 +100,7 @@ export class PatientController {
   }
 
   //update dependent patient
+  @UseGuards(JwtGuard)
   @Patch('update/dependentPatient')
   async updateDependentPatient(
     @Query('dependentId') dependentId: string,

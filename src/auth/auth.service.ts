@@ -16,6 +16,12 @@ export class AuthService {
   ) {}
 
   async validateUser(username: string, password: string) {
+    username = username.trim();
+    if (!username)
+      throw new HttpException(
+        'USERNAME field cannot be left empty',
+        HttpStatus.BAD_REQUEST,
+      );
     const user = await this.prismaService.user.findUnique({
       where: {
         username: username,

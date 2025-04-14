@@ -11,7 +11,6 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { IAppointments } from './appointments.interface';
 import {
   CreateAppointmentsDto,
   ReturnAppointmentDto,
@@ -34,6 +33,7 @@ export class AppointmentsController {
       createAppoinment,
     );
   }
+  @UseGuards(JwtGuard)
   @Get('all')
   async getAllAppointments(): Promise<ReturnAppointmentDto[]> {
     return await this.appointmentService.getAllAppointments();
@@ -51,6 +51,7 @@ export class AppointmentsController {
       patient_id.trim(),
     );
   }
+  @UseGuards(JwtGuard)
   @Get('dependentPatient/all')
   async getAllAppointmentsByDependent(
     @Query('dependentPatientId') dependentId: string,
@@ -64,6 +65,7 @@ export class AppointmentsController {
       dependentId,
     );
   }
+  @UseGuards(JwtGuard)
   @Get('appointmentId')
   async getAppointmentsById(
     @Query('appointmentId') id: string,
@@ -76,6 +78,7 @@ export class AppointmentsController {
     }
     return await this.appointmentService.getAppointmentsById(id);
   }
+  @UseGuards(JwtGuard)
   @Patch('update')
   async updateAppointment(
     @Query('appointmentId') id: string,
@@ -92,6 +95,7 @@ export class AppointmentsController {
       updateAppointmentDto,
     );
   }
+  @UseGuards(JwtGuard)
   @Delete('delete')
   async deleteAppoinment(@Query('appointmentId') id: string): Promise<void> {
     if (!id.trim()) {

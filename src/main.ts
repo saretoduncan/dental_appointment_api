@@ -6,6 +6,7 @@ import * as cookieParser from 'cookie-parser';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors();
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -14,6 +15,7 @@ async function bootstrap() {
     }),
   );
   app.use(cookieParser());
+
   dotenv.config();
   const config = new DocumentBuilder()
     .setTitle('DentistAppointmentApi')

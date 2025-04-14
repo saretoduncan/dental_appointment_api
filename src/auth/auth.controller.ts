@@ -34,13 +34,13 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtGuard)
   @Post('refreshToken')
   @UseGuards(RefreshJwtGuard)
   async refreshToken(
     @Request()
     req: RequstWithUser,
   ) {
-
     return this.authService.refreshToken(
       req.user.username,
       req.user.id,
@@ -48,6 +48,7 @@ export class AuthController {
     );
   }
   @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtGuard)
   @Post('logout')
   @UseGuards(JwtGuard)
   logout(@Res({ passthrough: true }) res: Response) {
