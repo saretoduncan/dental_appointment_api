@@ -34,9 +34,8 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtGuard)
-  @Post('refreshToken')
   @UseGuards(RefreshJwtGuard)
+  @Post('refreshToken')
   async refreshToken(
     @Request()
     req: RequstWithUser,
@@ -47,6 +46,7 @@ export class AuthController {
       req.user.access_levels.map((level) => level.access_level),
     );
   }
+  
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtGuard)
   @Post('logout')

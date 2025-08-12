@@ -1,10 +1,9 @@
-import {  Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { getJwtSecret } from 'src/Constants/constants';
-import { AccessLevelResDto } from 'src/dto/users.dto';
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy,'jwt') {
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -12,8 +11,10 @@ export class JwtStrategy extends PassportStrategy(Strategy,'jwt') {
       secretOrKey: getJwtSecret(),
     });
   }
- 
-  validate(payload:{sub:string,username:string,roles:string[]}) {
+
+  validate(payload: { sub: string; username: string; roles: string[] }) {
+    if (!payload.sub || !payload.username || !payload.roles)
+      throw new ForbiddenException('!Invalid token payload');
     return {
       id: payload.sub,
       username: payload.username,
